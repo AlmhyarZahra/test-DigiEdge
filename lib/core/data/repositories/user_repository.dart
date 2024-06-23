@@ -1,76 +1,94 @@
-// import 'package:dartz/dartz.dart';
-// import 'package:empty_project/core/data/models/apis/token_info.dart';
-// import 'package:empty_project/core/data/models/common_response.dart';
-// import 'package:empty_project/core/data/network/endpoints/user_endpoints.dart';
-// import 'package:empty_project/core/data/network/network_config.dart';
-// import 'package:empty_project/core/enums/request_type.dart';
-// import 'package:empty_project/core/utils/network_util.dart';
+import 'package:auto/core/data/models/apis/auth_model.dart';
+import 'package:auto/core/data/models/apis/password_model.dart';
+import 'package:auto/core/data/network/api_service.dart';
+import 'package:auto/core/data/network/api_url.dart';
+import 'package:auto/core/utils/general_util.dart';
 
-// class UserRepository {
-//   Future<Either<String, TokenInfo>> login({
-//     required String email,
-//     required String password,
-//   }) async {
-//     try {
-//       return NetworkUtil.sendRequest(
-//         type: RequestType.POST,
-//         url: UserEndPoints.login,
-//         body: {
-//           'userName': email,
-//           'password': password,
-//         },
-//         headers: NetworkConfig.getHeaders(
-//           needAuth: false,
-//         ),
-//       ).then((response) {
-//         CommonResponse<Map<String, dynamic>> commonResponse =
-//             CommonResponse.fromJson(response);
+class UserRepository {
+  Future<AuthModel> creatAccount({
+    required String name,
+    required String email,
+    required String phone,
+    required String password,
+    required String countryCode,
+    required String confirmPassword,
+  }) {
+    final snapshot = ApiService<AuthModel>().multiPartRequset(
+        url: ApiUrl.register,
+        builder: AuthModel.fromJson,
+        onRequest: (request) {
+          request.headers['Content-Type'] = 'application/json';
+          request.fields['name'] = name;
+          request.fields['email'] = email;
+          request.fields['phone'] = phone;
+          request.fields['password'] = password;
+          request.fields['country_code'] = countryCode;
+          request.fields['password_confirm'] = confirmPassword;
+        });
+    return snapshot;
+  }
 
-//         if (commonResponse.getStatus) {
-//           return Right(TokenInfo.fromJson(commonResponse.data ?? {}));
-//         } else {
-//           return Left(commonResponse.message ?? '');
-//         }
-//       });
-//     } catch (e) {
-//       return Left(e.toString());
-//     }
-//   }
 
-//   Future<Either<String, bool>> register({
-//     required String email,
-//     required String password,
-//     required String firstname,
-//     required String lastname,
-//     required int age,
-//     required String photoPath,
-//   }) async {
-//     try {
-//       return NetworkUtil.sendMultipartRequest(
-//         type: RequestType.POST,
-//         url: UserEndPoints.register,
-//         fields: {
-//           'Email': email,
-//           'FirstName': firstname,
-//           'LastName': lastname,
-//           'Password': password,
-//           'Age': age.toString(),
-//         },
-//         files: {"Photo": photoPath},
-//         headers:
-//             NetworkConfig.getHeaders(needAuth: false, isMultipartRequest: true),
-//       ).then((response) {
-//         CommonResponse<Map<String, dynamic>> commonResponse =
-//             CommonResponse.fromJson(response);
+  Future<AuthModel> login({
+    required String email,
+    required String password,
+  }) {
+    final snapshot = ApiService<AuthModel>().multiPartRequset(
+        url: ApiUrl.login,
+        builder: AuthModel.fromJson,
+        onRequest: (request) {
+          request.headers['Content-Type'] = 'application/json';
+          request.fields['email'] = email;
+          request.fields['password'] = password;
+        });
+    return snapshot;
+  }
 
-//         if (commonResponse.getStatus) {
-//           return Right(commonResponse.getStatus);
-//         } else {
-//           return Left(commonResponse.message ?? '');
-//         }
-//       });
-//     } catch (e) {
-//       return Left(e.toString());
-//     }
-//   }
-// }
+  Future<AuthModel> updateProfile({
+    required String email,
+    required String name,
+    required String phone,
+    required String countryCode,
+  }) {
+    final snapshot = ApiService<AuthModel>().multiPartRequset(
+        url: ApiUrl.updateProfile,
+        builder: AuthModel.fromJson,
+        onRequest: (request) {
+          request.headers['Content-Type'] = 'application/json';
+          request.headers['Authorization'] = storage.getTokenInfo()!;
+          request.fields['email'] = email;
+          request.fields['name'] = name;
+          request.fields['phone'] = phone;
+          request.fields['country_code'] = countryCode;
+        });
+    return snapshot;
+  }
+
+  Future<PassordModel> changePassword({
+    required String newPassword,
+    required String confirmPassword,
+    required String currentPassword
+  }) {
+    final snapshot = ApiService<PassordModel>().multiPartRequset(
+        url: ApiUrl.changePassword,
+        builder: PassordModel.fromJson,
+        onRequest: (request) {
+          request.headers['Content-Type'] = 'application/json';
+          request.headers['Authorization'] = storage.getTokenInfo()!;
+          request.fields['password'] = newPassword;
+          request.fields['password_confirm'] = confirmPassword;
+          request.fields['current_password'] = currentPassword;
+        });
+    return snapshot;
+  }
+
+  Future<PassordModel> deleteAcount() {
+    final snapshot = ApiService<PassordModel>().build(
+      url: ApiUrl.deleteAccount,
+      isPublic: false,
+      apiType: ApiType.delete,
+      builder: PassordModel.fromJson,
+    );
+    return snapshot;
+  }
+}

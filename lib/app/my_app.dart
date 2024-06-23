@@ -1,49 +1,38 @@
-import 'package:auto/core/enums/connectivity_status.dart';
 import 'package:auto/core/translation/app_translation.dart';
 import 'package:auto/core/utils/general_util.dart';
-import 'package:auto/ui/views/splash_screen/splash_view.dart';
+import 'package:auto/ui/views/home/home_view.dart';
+import 'package:auto/ui/views/welcome/welcome_view.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
-  //mmmm
   @override
   Widget build(BuildContext context) {
-    return StreamProvider(
-      create: (context) =>
-          connectivityService.connectivityStatusController.stream,
-      initialData: ConnectivityStatus.onLine,
-      child: GetMaterialApp(
-          //theme: ThemeData(fontFamily: 'Al-Jazeera-Arabic'),
-          defaultTransition: GetPlatform.isAndroid
-              ? Transition.rightToLeftWithFade
-              : Transition.cupertino,
-          transitionDuration: const Duration(milliseconds: 400),
-          translations: AppTranlation(),
-          locale: getLocal(),
-          fallbackLocale: getLocal(),
-          builder: BotToastInit(),
-          navigatorObservers: [BotToastNavigatorObserver()],
-          debugShowCheckedModeBanner: false,
-          // theme: ThemeData(
-          //   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          //       // backgroundColor: Colors.transparent,
-          //       ),
-          // ),
-          title: 'Auto',
-          home:
-              //storage.getTokenInfo() != null
-              ///?
-              const SplashView()
-          //: const SignInView()
-          ),
-    );
+    return GetMaterialApp(
+        supportedLocales: const [
+          Locale("en"),
+        ],
+        localizationsDelegates: const [
+          CountryLocalizations.delegate,
+        ],
+        theme: ThemeData(
+          fontFamily: 'Alexandria',
+        ),
+        defaultTransition: GetPlatform.isAndroid? Transition.rightToLeftWithFade : Transition.cupertino,
+        transitionDuration: const Duration(milliseconds: 400),
+        translations: AppTranlation(),
+        locale: getLocal(),
+        fallbackLocale: getLocal(),
+        builder: EasyLoading.init(builder: BotToastInit()),
+        navigatorObservers: [BotToastNavigatorObserver()],
+        debugShowCheckedModeBanner: false,
+        title: 'Auto',
+        home: storage.getFirstLanuch()? const WelcomeView(): const HomeView());
   }
 }
 

@@ -69,7 +69,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       validator: widget.validator,
       textInputAction: TextInputAction.next,
       keyboardType: widget.typeInput ?? TextInputType.text,
-      textAlign: widget.textAlign ?? TextAlign.start,
+      textAlign: widget.textAlign ?? TextAlign.center,
       obscureText: widget.obscure ?? false,
       controller: widget.controller,
       style: TextStyle(
@@ -84,28 +84,28 @@ class _CustomTextFieldState extends State<CustomTextField> {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
             width: widget.widthBorder ?? 1,
-            color: widget.borderColor ?? AppColors.mainGrey2Color,
+            color: widget.borderColor ?? AppColors.purple3D0,
           ),
           borderRadius: BorderRadius.all(
-            Radius.circular(widget.circularSize ?? screenWidth(10)),
+            Radius.circular(widget.circularSize ?? screenWidth(30)),
           ),
         ),
         //suffixIconColor: AppColors.mainYellowColor,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             width: widget.widthBorder ?? 1,
-            color: AppColors.mainYellowColor,
+            color: AppColors.purple3D0,
           ),
           borderRadius: BorderRadius.all(
-            Radius.circular(widget.circularSize ?? screenWidth(10)),
+            Radius.circular(widget.circularSize ?? screenWidth(30)),
           ),
         ),
         errorStyle: const TextStyle(
-          color: AppColors.mainOrangeColor,
+          color: Colors.red,
         ),
         hintStyle: TextStyle(
           color: widget.colorHintText ?? AppColors.mainGreyColor,
-          fontSize: widget.fontSize ?? screenWidth(30),
+          fontSize: widget.fontSize ?? screenWidth(24),
         ),
         contentPadding: EdgeInsetsDirectional.only(
           start: widget.contentPaddingLeft ?? 0,
@@ -118,7 +118,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             width: widget.widthBorder ?? 1,
           ),
           borderRadius: BorderRadius.all(
-            Radius.circular(widget.circularSize ?? screenWidth(10)),
+            Radius.circular(widget.circularSize ?? screenWidth(30)),
           ),
         ),
       ),
